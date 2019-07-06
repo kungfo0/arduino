@@ -24,8 +24,6 @@ const uint8_t sda = D3;
     WiFiClient client;
     #define AIO_SERVER      "io.adafruit.com"
     #define AIO_SERVERPORT  1883        // use 8883 for SSL
-    #define AIO_USERNAME    "" //your adafruit IO user name
-    #define AIO_KEY         "" //your adafruit IO key
     Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
     Adafruit_MQTT_Publish espIp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/espIP");
     void MQTT_connect() {
@@ -170,10 +168,12 @@ void handleNotFound() {
     httpServer.send ( 404, "text/plain", message );    
 }
 
+#define MODE_PIN 16
 #define MotorPWMPin1   D5
-#define MotorPWMPin11   D6
+#define MotorDirPin1   D6
 #define MotorPWMPin2   D8
-#define MotorPWMPin22   D7
+#define MotorDirPin2   D7
+
 #define sampleTime  0.01
 MPU6050 mpu;
 int16_t accY, accZ, gyroX;
@@ -184,21 +184,26 @@ volatile byte count=0;
 void setMotors(int MotorPWM ) {
   if(MotorPWM >= 0) {
     analogWrite(MotorPWMPin1   , MotorPWM);
-    analogWrite(MotorPWMPin11   , 0);
+    analogWrite(MotorDirPin1   , HIGH);
     analogWrite(MotorPWMPin2   , MotorPWM);
-    analogWrite(MotorPWMPin22   , 0);
+    analogWrite(MotorDirPin2   , HIGH);
   }
   else {
     analogWrite(MotorPWMPin1   , -MotorPWM);
-    analogWrite(MotorPWMPin11   , 0);
+    analogWrite(MotorDirPin1   , LOW);
     analogWrite(MotorPWMPin2   , -MotorPWM);
-    analogWrite(MotorPWMPin22   , 0);
+    analogWrite(MotorDirPin2   , LOW);
   }
 }
 
 void setup() {
+  pinMode(MODE_PIN, OUTPUT);
   pinMode(MotorPWMPin1   , OUTPUT);
   pinMode(MotorPWMPin2   , OUTPUT);
+  pinMode(MotorDirPin1   , OUTPUT);
+  pinMode(MotorDirPin2   , OUTPUT);
+  pinMode(MODE_PIN, HIGH);//MODE
+  
   setMotors(0);
   Serial.begin(115200);
   Wire.begin(sda, scl);
