@@ -24,8 +24,8 @@ const uint8_t sda = D3;
     WiFiClient client;
     #define AIO_SERVER      "io.adafruit.com"
     #define AIO_SERVERPORT  1883        // use 8883 for SSL
-    #define AIO_USERNAME    "kungfo0" //your adafruit IO user name
-    #define AIO_KEY         "8edb19c285ef4a82a9610efd9f7a03a1" //your adafruit IO key
+    #define AIO_USERNAME    "" //your adafruit IO user name
+    #define AIO_KEY         "" //your adafruit IO key
     Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
     Adafruit_MQTT_Publish espIp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/espIP");
     void MQTT_connect() {
